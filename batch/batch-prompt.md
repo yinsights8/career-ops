@@ -228,7 +228,7 @@ Donde `{company-slug}` es el nombre de empresa en lowercase, sin espacios, con g
 **Score:** {X/5}
 **Legitimacy:** {High Confidence | Proceed with Caution | Suspicious}
 **URL:** {URL de la oferta original}
-**PDF:** {output/cv-candidate-{company-slug}-{{DATE}}.pdf if score ≥ the resolved `auto_pdf_score_threshold` from Paso 4, else `not generated — run /career-ops pdf {company-slug} to create on demand`}
+**PDF:** `C:/Users/yashd/iCloudDrive/Documents_/Resumes/updated cvs/UK_resumes/base_resumes/resumes_md/tailored/{role_name}/yash-{role_name}-{company_slug}-cv-{version}.pdf` if score ≥ threshold, else `not generated — run /career-ops pdf {company-slug} to create on demand`
 **Batch ID:** {{ID}}
 
 ---

@@ -215,3 +215,54 @@ Save full evaluation in `reports/{###}-{company-slug}-{YYYY-MM-DD}.md`.
 ```markdown
 | # | Date | Company | Role | Score | Status | PDF | Report |
 ```
+
+### 3. Generate Tailored CV and Save to Resume Directory
+
+**a) Derive naming variables:**
+- `candidate` = kebab-case of `profile.yml → candidate.full_name`
+  (e.g., "Yash Dhakade" → "yash-dhakade")
+- `role_name` = kebab-case of the JD role title
+  (e.g., "Junior AI Engineer" → "junior-ai-engineer")
+- `company` = kebab-case of the company name
+  (e.g., "Soothsayer Analytics" → "soothsayer-analytics")
+
+**b) Detect version by scanning `{copy_to_dir}/` for existing files:**
+- `{copy_to_dir}` = `cv.copy_to_dir` from `config/profile.yml`
+- Scan `{copy_to_dir}/` for files matching `{candidate}-{role_name}-{company}-cv-v*.html`
+- Count matches → version = v{n+1}, or v1 if none found
+
+**c) Build final filenames:**
+- `html_file = output/{###}-{company-slug}-{YYYY-MM-DD}-cv.html`
+  (uses the existing report-based naming in career-ops/output/)
+- `pdf_file = output/{###}-{company-slug}-{YYYY-MM-DD}.pdf`
+  (uses the existing report-based naming in career-ops/output/)
+- `resume_pdf = {copy_to_dir}/{candidate}-{role_name}-{company}-cv-{version}.pdf`
+- `resume_html = {copy_to_dir}/{candidate}-{role_name}-{company}-cv-{version}.html`
+
+**d) Generate tailored HTML CV:**
+- Read `templates/cv-template.html`
+- Personalise Summary with JD keywords + exit narrative bridge
+- Reorder experience bullets by JD relevance
+- Build competency grid (6-8 keyword phrases from JD requirements)
+- Select top 3-4 projects matching the JD
+- Inject keywords naturally into existing achievements (NEVER invent)
+- Write to `html_file`
+
+**e) Generate PDF with --copy-filename:**
+```bash
+node generate-pdf.mjs "{html_file}" "{pdf_file}" --format={letter|a4} --copy-filename="{resume_pdf}"
+```
+- `pdf_file` uses existing naming in career-ops/output/ (unchanged)
+- `--copy-filename` copies the PDF to the flat resume destination with new naming
+
+**f) Copy HTML source to resumes directory:**
+```bash
+cp "{html_file}" "{resume_html}"
+```
+
+**g) Verify:**
+- Confirm `pdf_file` exists in career-ops output
+- Confirm `resume_pdf` exists at destination
+- Confirm `resume_html` exists at destination
+
+**h) Update tracker entry:** Change PDF column from ❌ to ✅, update path to `resume_pdf`

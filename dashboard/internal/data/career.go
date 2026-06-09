@@ -100,6 +100,9 @@ func ParseApplications(careerOpsPath string) []model.CareerApplication {
 		if rm := reReportLink.FindStringSubmatch(fields[7]); rm != nil {
 			app.ReportNumber = rm[1]
 			app.ReportPath = rm[2]
+			if strings.HasPrefix(app.ReportPath, "../") {
+				app.ReportPath = strings.TrimPrefix(app.ReportPath, "../")
+			}
 		}
 
 		// Notes (field 8 if exists)
