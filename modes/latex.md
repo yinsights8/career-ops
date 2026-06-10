@@ -17,10 +17,7 @@ Export a tailored, ATS-optimized CV as a `.tex` file and compile it to PDF via `
 11. Generate the `.tex` file using `templates/cv-template.tex`
 12. Write to `output/cv-{candidate}-{company}-{YYYY-MM-DD}.tex`
 13. Run: `node generate-latex.mjs output/cv-{candidate}-{company}-{YYYY-MM-DD}.tex output/cv-{candidate}-{company}-{YYYY-MM-DD}.pdf`
-14. Copy and rename the generated HTML file: `cp "output/cv-{candidate}-{company}-{YYYY-MM-DD}.tex" "C:/Users/yashd/iCloudDrive/Documents_/Resumes/updated_cvs/UK_resumes/base_resumes/resumes_md/tailored/output/{candidate}-{role_name}-{company}-cv-{version}.pdf"`
-15. Verify the copied PDF exists and is a valid PDF:
-   `file "C:/Users/yashd/iCloudDrive/Documents_/Resumes/updated_cvs/UK_resumes/base_resumes/resumes_md/tailored/output/{candidate}-{role_name}-{company}-cv-{version}.pdf""`
-16. Report: .tex path, .pdf path, file sizes, section count, keyword coverage %
+14. Report: .tex path, .pdf path, file sizes, section count, keyword coverage %
 
 **Requires:** `tectonic` (preferred — `brew install tectonic`, auto-downloads packages) or `pdflatex` (MiKTeX / TeX Live) on PATH.
 

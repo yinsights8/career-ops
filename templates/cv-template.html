@@ -102,13 +102,8 @@
   }
 
   .contact-row a {
-    color: hsl(187, 74%, 32%);
+    color: #555;
     text-decoration: none;
-    {% comment %} justify-content: center; {% endcomment %}
-  }
-  
-  .contact-row a:hover {
-  text-decoration: underline;
   }
 
   .contact-row .separator {
@@ -118,7 +113,6 @@
   /* === SECTIONS === */
   .section {
     margin-bottom: 18px;
-    page-break-inside: auto;
   }
 
   .section-title {
@@ -132,8 +126,6 @@
     padding-bottom: 4px;
     margin-bottom: 10px;
     line-height: 1.2;
-    break-after: avoid;
-    page-break-after: avoid;
   }
 
   /* === PROFESSIONAL SUMMARY === */
@@ -177,8 +169,6 @@
     align-items: baseline;
     gap: 12px;
     margin-bottom: 4px;
-    break-after: avoid;
-    page-break-after: avoid;
   }
 
   .job-company {
@@ -227,11 +217,6 @@
     margin-bottom: 12px;
   }
 
-  .project-header {
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-
   .project-title {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 11.5px;
@@ -262,22 +247,6 @@
     margin-top: 3px;
   }
 
- {% comment %}  {% endcomment %}
-.project-desc ul,
-.project-desc ol {
-  padding-left: 18px;
-  margin-top: 4px;
-}
-
-.project-desc li {
-  list-style-type: disc;
-  font-size: 10.5px;
-  line-height: 1.6;
-  color: #444;
-  margin-bottom: 4px;
-}
- {% comment %}  {% endcomment %}
-
   /* === EDUCATION === */
   .edu-item {
     margin-bottom: 8px;
@@ -288,8 +257,6 @@
     justify-content: space-between;
     align-items: baseline;
     gap: 12px;
-    break-after: avoid;
-    page-break-after: avoid;
   }
 
   .edu-title {
@@ -312,8 +279,8 @@
   .edu-desc {
     font-size: 10px;
     color: #666;
-    margin-top: 4px;
-    line-height: 1.6;
+    margin-top: 2px;
+    line-height: 1.5;
   }
 
   /* === CERTIFICATIONS === */
@@ -323,12 +290,6 @@
     align-items: baseline;
     gap: 12px;
     margin-bottom: 6px;
-  }
-
-  .edu-desc strong,
-  .edu-desc b {
-    font-weight: 600;
-    color: #333;
   }
 
   .cert-title {
@@ -389,9 +350,6 @@
     break-inside: avoid;
     page-break-inside: avoid;
   }
-
-
-
 </style>
 </head>
 <body>
@@ -404,11 +362,11 @@
     <div class="contact-row">
       <span>{{PHONE}}</span>
       <span class="separator">|</span>
-      <a href="mailto:{{EMAIL}}">Email</a>
+      <span>{{EMAIL}}</span>
       <span class="separator">|</span>
-      <a href="{{LINKEDIN_URL}}">LinkedIn</a>
+      <a href="{{LINKEDIN_URL}}">{{LINKEDIN_DISPLAY}}</a>
       <span class="separator">|</span>
-      <a href="{{PORTFOLIO_URL}}">GitHub</a>
+      <a href="{{PORTFOLIO_URL}}">{{PORTFOLIO_DISPLAY}}</a>
       <span class="separator">|</span>
       <span>{{LOCATION}}</span>
     </div>

@@ -27,37 +27,10 @@ Include Block G in the saved report. Add **URL:** {url} and **Legitimacy:** {tie
 
 ## Step 3 — Generate PDF
 
-1. **Derive naming variables:**
-   - `candidate` = kebab-case of `profile.yml → candidate.full_name` (e.g., "Yash Dhakade" → "yash-dhakade")
-   - `role_name` = kebab-case of the JD role title (e.g., "Junior AI Engineer" → "junior-ai-engineer")
-   - `company` = kebab-case of the company name (e.g., "Prisma AI" → "prisma-ai")
-   - `date` = YYYY-MM-DD (current date)
-   - `report_num` = the zero-padded report number (e.g., "005")
+Read `config/profile.yml`. Check `cv.output_format`:
 
-2. **Build output filenames:**
-   - `html_file = output/{report_num}-{company}-{date}-cv.html`
-   - `pdf_file = output/{report_num}-{company}-{date}.pdf`
-
-3. **Detect version by scanning `copy_to_dir`:**
-   - `copy_to_dir` = `cv.copy_to_dir` from `config/profile.yml`
-   - Scan `copy_to_dir/` for files matching `{candidate}-{role_name}-{company}-cv-v*.pdf`
-   - Count matches → `version = v{n+1}`, or `v1` if none found
-
-4. **Build resume destination path:**
-   - `resume_pdf = {copy_to_dir}/{candidate}-{role_name}-{company}-cv-{version}.pdf`
-
-5. **Generate PDF:**
-   - Read `templates/cv-template.html` and generate tailored HTML with JD keywords
-   - Write to `html_file`
-   - Execute: `node generate-pdf.mjs "{html_file}" "{pdf_file}" --format={letter|a4} --copy-filename="{resume_pdf}"`
-   - Copy HTML to: `{copy_to_dir}/{candidate}-{role_name}-{company}-cv-{version}.html`
-
-6. **Verify:**
-   - Confirm `pdf_file` exists in career-ops output
-   - Confirm `resume_pdf` exists at destination
-   - Confirm `resume_html` exists at destination
-
-**If `cv.output_format` is `"latex"`**, execute from `modes/latex.md` instead (steps a-d above still apply).
+- If `"latex"`, execute the full pipeline from `modes/latex.md`
+- Otherwise (default), execute the full pipeline from `modes/pdf.md`
 
 ## Step 4 — Draft Application Answers (only if score >= 4.5)
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -156,7 +155,7 @@ func main() {
 	pathFlag := flag.String("path", ".", "Path to career-ops directory")
 	flag.Parse()
 
-	careerOpsPath := filepath.Clean(*pathFlag)
+	careerOpsPath := *pathFlag
 
 	// Load applications
 	apps := data.ParseApplications(careerOpsPath)
