@@ -4,22 +4,39 @@
  * generate-pdf.mjs — HTML → PDF via Playwright
  *
  * Usage:
- *   node career-ops/generate-pdf.mjs <input.html> <output.pdf> [--format=letter|a4]
+ *   node career-ops/generate-pdf.mjs <input.html> <output.pdf> [--format=letter|a4] [--copy-to=<dir>] [--copy-filename=<fullpath>]
+ *
+ *   --copy-to=<dir>          Optional. Copies the generated PDF to the specified directory.
+ *                           Original filename is preserved. If not provided, reads copy_to_dir
+ *                           from config/profile.yml.
+ *   --copy-filename=<path>  Optional. Copies the PDF to this exact full path (overrides --copy-to
+ *                           for the copy operation). Use when you need a specific filename.
+ *                           Example: --copy-filename="C:/dir/name.pdf"
  *
  * Requires: @playwright/test (or playwright) installed.
  * Uses Chromium headless to render the HTML and produce a clean, ATS-parseable PDF.
  */
 
 import { chromium } from 'playwright';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, basename } from 'path';
 import { readFile } from 'fs/promises';
-import { mkdirSync } from 'fs';
+import { mkdirSync, copyFileSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const CONFIG_PATH = resolve(__dirname, 'config', 'profile.yml');
 
 // Ensure output directory exists (fresh setup)
 mkdirSync(resolve(__dirname, 'output'), { recursive: true });
+
+function loadConfigCopyToDir() {
+  try {
+    const yaml = readFileSync(CONFIG_PATH, 'utf8');
+    const match = yaml.match(/copy_to_dir:\s*["']?([^"'\n]+)["']?/);
+    if (match && match[1]) return match[1].trim();
+  } catch {}
+  return null;
+}
 
 /**
  * Normalize text for ATS compatibility by converting problematic Unicode.
@@ -92,11 +109,15 @@ async function generatePDF() {
   const args = process.argv.slice(2);
 
   // Parse arguments
-  let inputPath, outputPath, format = 'a4';
+  let inputPath, outputPath, format = 'a4', copyToPath = null, copyFilename = null;
 
   for (const arg of args) {
     if (arg.startsWith('--format=')) {
       format = arg.split('=')[1].toLowerCase();
+    } else if (arg.startsWith('--copy-filename=')) {
+      copyFilename = arg.split('=').slice(1).join('=');
+    } else if (arg.startsWith('--copy-to=')) {
+      copyToPath = arg.split('=').slice(1).join('=');
     } else if (!inputPath) {
       inputPath = arg;
     } else if (!outputPath) {
@@ -105,8 +126,17 @@ async function generatePDF() {
   }
 
   if (!inputPath || !outputPath) {
-    console.error('Usage: node generate-pdf.mjs <input.html> <output.pdf> [--format=letter|a4]');
+    console.error('Usage: node generate-pdf.mjs <input.html> <output.pdf> [--format=letter|a4] [--copy-to=<dir>] [--copy-filename=<path>]');
     process.exit(1);
+  }
+
+  // Fall back to config copy_to_dir if --copy-to not provided
+  if (!copyToPath) {
+    const configCopyTo = loadConfigCopyToDir();
+    if (configCopyTo) {
+      copyToPath = configCopyTo;
+      console.log(`📋 Using copy_to_dir from config: ${copyToPath}`);
+    }
   }
 
   inputPath = resolve(inputPath);
@@ -176,6 +206,22 @@ async function generatePDF() {
     // Write PDF
     const { writeFile } = await import('fs/promises');
     await writeFile(outputPath, pdfBuffer);
+
+    // Optional: copy to a secondary location
+    // copyFilename takes absolute precedence over copyToPath
+    const actualCopyDest = copyFilename
+      ? resolve(copyFilename)
+      : (copyToPath ? resolve(copyToPath) : null);
+
+    if (actualCopyDest) {
+      const isDir = !actualCopyDest.match(/\.[^\\/]+$/);
+      const destPath = isDir
+        ? resolve(actualCopyDest, basename(outputPath))
+        : actualCopyDest;
+      mkdirSync(dirname(destPath), { recursive: true });
+      copyFileSync(outputPath, destPath);
+      console.log(`📋 Copied to: ${destPath}`);
+    }
 
     // Count pages (approximate from PDF structure)
     const pdfString = pdfBuffer.toString('latin1');
