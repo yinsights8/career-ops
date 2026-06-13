@@ -32,7 +32,15 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import path from 'path';
 import yaml from 'js-yaml';
 
+// Prefer the local `_http` helper; only reach _types.js if we need `Provider`.
 import { makeHttpCtx } from './providers/_http.mjs';
+
+try {
+  const { config } = await import('dotenv');
+  config();
+} catch {
+  // dotenv is optional — fall back to process.env if not installed
+}
 
 const parseYaml = yaml.load;
 
